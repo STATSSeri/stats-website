@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<!--
+  Template: AXIS v1.0
+  Author: Haruki Tominaga
+  License: https://amix-design.com/tominaga/eyan-theme/license 
+  © 2025 EYAN / トミナガハルキ
+-->
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    
+    <title>Template - AXIS</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           ★カラー・基本設定
+           ここを変更するとサイト全体の色が変わります
+           ========================================= */
+        :root {
+            --bg: #f4f4f4;       /* 背景色 */
+            --text: #111;        /* 文字色 */
+            --accent: #ff3300;   /* アクセントカラー（オレンジ） */
+            --border: #111;      /* 線の色 */
+            --border-width: 2px; /* 線の太さ */
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; padding: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ユーティリティ */
+        .u-caps { text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.75rem; font-weight: 600; }
+        .u-line-top { border-top: var(--border-width) solid var(--border); }
+        .u-line-btm { border-bottom: var(--border-width) solid var(--border); }
+        
+        /* ローダー */
+        .loader {
+            position: fixed; inset: 0; background: var(--accent); z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1);
+        }
+        .loader-text { font-size: 4rem; font-weight: 900; color: #fff; letter-spacing: 0.05em; }
+        .loader.hide { transform: translateY(-100%); }
+
+        /* ヘッダー */
+        header {
+            min-height: 90vh;
+            display: flex; flex-direction: column; justify-content: space-between;
+            padding: 2vw;
+            position: relative;
+        }
+        .header-top { display: flex; justify-content: space-between; align-items: flex-start; }
+        .logo { font-size: 1.5rem; font-weight: 900; letter-spacing: -0.05em; line-height: 1; }
+        
+        .hero-title {
+            font-size: 13vw;
+            line-height: 0.8;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            margin: 0;
+            text-transform: uppercase;
+            word-break: break-all;
+        }
+        .hero-title span { display: block; opacity: 0; transform: translateY(100px); transition: 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        .loaded .hero-title span { opacity: 1; transform: translateY(0); }
+
+        /* マーキーエリア（流れる文字） */
+        .marquee-wrap {
+            overflow: hidden; white-space: nowrap; border-top: var(--border-width) solid var(--border); border-bottom: var(--border-width) solid var(--border);
+            padding: 1.5rem 0; background: #fff;
+        }
+        .marquee-content {
+            display: inline-block; animation: marquee 20s linear infinite;
+        }
+        .marquee-text {
+            font-size: 4rem; font-weight: 900; -webkit-text-stroke: 1px var(--text); color: transparent; margin-right: 2rem;
+        }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        /* グリッドレイアウト */
+        .grid-section {
+            display: grid; grid-template-columns: 30% 70%;
+            border-bottom: var(--border-width) solid var(--border);
+        }
+        .sticky-col {
+            padding: 3rem 2vw; border-right: var(--border-width) solid var(--border);
+            position: sticky; top: 0; height: 100vh; background: var(--bg);
+            display: flex; flex-direction: column; justify-content: space-between;
+            z-index: 1;
+        }
+        .content-col { padding: 0; position: relative; }
+
+        /* About Text */
+        .big-lead {
+            font-size: 3rem; font-weight: 700; line-height: 1.2; padding: 6rem 4rem;
+            margin: 0;
+        }
+        
+        /* Works List */
+        .work-item {
+            display: block; position: relative;
+            border-bottom: 1px solid #ccc;
+            padding: 4rem; transition: background 0.3s;
+            text-decoration: none; color: inherit;
+            cursor: pointer;
+        }
+        /* 隠し画像（存在チェック用） */
+        .work-item img.check-img { display: none; }
+
+        .work-item:last-child { border-bottom: none; }
+        .work-item:hover { background: #fff; }
+        .work-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2rem; }
+        .work-num { font-family: 'Inter'; font-weight: 600; color: var(--accent); }
+        .work-title { font-size: 4vw; margin: 0; font-weight: 800; line-height: 1; }
+        .work-cat { 
+            position: absolute; right: 4rem; top: 50%; transform: translateY(-50%);
+            border: 1px solid var(--text); padding: 0.5rem 1rem; border-radius: 100px;
+            opacity: 0; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .work-item:hover .work-cat { opacity: 1; right: 2rem; background: var(--text); color: #fff; }
+
+        /* 画像表示エリア（ホバーで追従） */
+        .cursor-img {
+            position: fixed; width: 400px; height: 300px; object-fit: cover;
+            pointer-events: none; z-index: 10; opacity: 0;
+            transform: scale(0.8); transition: opacity 0.3s, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 2px solid var(--text); background: #ccc;
+        }
+        .cursor-img.active { opacity: 1; transform: scale(1); }
+
+        /* Company Profile Table */
+        .company-table {
+            width: 100%; border-collapse: collapse; margin-top: 0;
+        }
+        .company-table tr { border-bottom: 1px solid #ccc; }
+        .company-table th, .company-table td {
+            padding: 2rem; text-align: left; vertical-align: top;
+        }
+        .company-table th { width: 30%; font-weight: 600; color: #555; }
+        .company-table td { font-weight: 400; line-height: 1.6; }
+        .google-map-link {
+            display: inline-block; margin-top: 1rem; color: var(--accent); text-decoration: underline;
+        }
+
+        /* Modal Overlay */
+        .modal-wrap {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000;
+            opacity: 0; pointer-events: none; transition: opacity 0.4s;
+            display: flex; align-items: center; justify-content: center; padding: 2rem;
+        }
+        .modal-wrap.open { opacity: 1; pointer-events: auto; }
+        
+        .modal-content {
+            background: #fff; max-width: 900px; width: 100%; max-height: 90vh;
+            overflow-y: auto; position: relative;
+            display: grid; grid-template-columns: 1fr 1fr;
+        }
+        .modal-img {
+            width: 100%; height: 100%; object-fit: cover; min-height: 400px;
+        }
+        .modal-info { padding: 3rem; display: flex; flex-direction: column; justify-content: center; }
+        .modal-close {
+            position: absolute; top: 1rem; right: 1rem;
+            width: 40px; height: 40px; background: #000; color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 10; font-weight: 900;
+        }
+        
+        /* Footer */
+        .footer { padding: 6rem 2vw; border-top: var(--border-width) solid var(--border); background: #111; color: #fff; }
+        .footer-big { font-size: 10vw; font-weight: 900; line-height: 0.9; margin-bottom: 4rem; }
+        .footer-links a { color: #fff; text-decoration: none; font-size: 1.5rem; margin-right: 2rem; border-bottom: 1px solid #555; }
+        .footer-links a:hover { color: var(--accent); border-color: var(--accent); }
+
+        /* Mobile */
+        @media (max-width: 900px) {
+            header { min-height: 60vh; padding: 1.5rem; }
+            .hero-title { font-size: 18vw; margin-top: 2rem; }
+            
+            .grid-section { grid-template-columns: 1fr; }
+            .sticky-col { 
+                position: relative; height: auto; 
+                padding: 1.5rem;
+                border-right: none; border-bottom: var(--border-width) solid var(--border); 
+            }
+            
+            .big-lead { font-size: 1.5rem; padding: 2rem 1.5rem; }
+            .work-item { padding: 2rem 1.5rem; }
+            .work-title { font-size: 2rem; margin-top: 1rem; }
+            .work-cat { display: none; }
+            .cursor-img { display: none; } /* スマホではホバー画像なし */
+
+            /* Profile Table Mobile */
+            .company-table th, .company-table td { display: block; width: 100%; padding: 1rem 1.5rem; }
+            .company-table th { padding-bottom: 0; color: var(--accent); font-size: 0.8rem; }
+            .company-table td { padding-top: 0.5rem; border-bottom: 1px solid #eee; }
+
+            /* Footer Mobile */
+            .footer { padding: 3rem 1.5rem; }
+            .footer-big { font-size: 15vw; }
+            .footer-links a { display: block; margin-bottom: 1rem; font-size: 1.2rem; }
+
+            /* Modal Mobile */
+            .modal-content { grid-template-columns: 1fr; max-height: 80vh; }
+            .modal-img { height: 300px; }
+            .modal-info { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="loader">
+        <div class="loader-text" id="loader-text">HELLO!!</div>
+    </div>
+
+    <img id="hover-reveal" class="cursor-img" src="" alt="">
+
+    <div class="modal-wrap" id="modal-wrap">
+        <div class="modal-content">
+            <div class="modal-close" id="modal-close">✕</div>
+            <img src="" alt="" class="modal-img" id="modal-img">
+            <div class="modal-info">
+                <span class="u-caps" id="modal-cat" style="color:var(--accent); margin-bottom:1rem;"></span>
+                <h2 id="modal-title" style="font-size: 2.5rem; line-height:1; margin:0 0 1rem 0;"></h2>
+                <p id="modal-desc" style="opacity: 0.7; font-size: 0.9rem;">
+                    </p>
+            </div>
+        </div>
+    </div>
+
+    <header>
+        <div class="header-top">
+            <div id="brand-name" class="logo"></div>
+            <div id="brand-role" class="u-caps"></div>
+        </div>
+        <h1 class="hero-title" id="hero-title"></h1>
+    </header>
+
+    <div class="marquee-wrap">
+        <div class="marquee-content" id="marquee-text">
+        </div>
+    </div>
+
+    <section class="grid-section">
+        <div class="sticky-col">
+            <span class="u-caps">01 / Manifesto</span>
+            <div class="u-caps">Philosophy & Mindset</div>
+        </div>
+        <div class="content-col">
+            <p id="main-lead" class="big-lead"></p>
+        </div>
+    </section>
+
+    <section class="grid-section">
+        <div class="sticky-col">
+            <span class="u-caps">02 / Selected Works</span>
+            <div class="u-caps">Case Studies</div>
+        </div>
+        <div class="content-col" id="works-container">
+            </div>
+    </section>
+
+    <section class="grid-section">
+        <div class="sticky-col">
+            <span class="u-caps">03 / Profile</span>
+            <div class="u-caps">About Us</div>
+        </div>
+        <div class="content-col">
+            <table class="company-table">
+                <tr>
+                    <th>COMPANY NAME</th>
+                    <td id="co-name"></td>
+                </tr>
+                <tr>
+                    <th>ESTABLISHED</th>
+                    <td>2024.04.01</td>
+                </tr>
+                <tr>
+                    <th>ADDRESS</th>
+                    <td>
+                        〒150-0000<br>
+                        東京都渋谷区神南 0-1-2 EXAMPLEビル 3F<br>
+                        <a href="#" class="google-map-link">Google Map</a>
+                    </td>
+                </tr>
+                <tr>
+                    <th>BUSINESS</th>
+                    <td>
+                        ブランディング / Webデザイン / アートディレクション<br>
+                        UI/UX デザイン / コンテンツ制作
+                    </td>
+                </tr>
+                <tr>
+                    <th>REPRESENTATIVE</th>
+                    <td>Taro Yamada</td>
+                </tr>
+            </table>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-big">LET'S TALK.</div>
+        <div class="footer-links" id="footer-links"></div>
+        <div style="margin-top: 4rem; opacity: 0.5; font-size: 0.8rem;">
+            &copy; <span id="year"></span> <span id="footer-copy"></span>
+        </div>
+    </footer>
+
+    <script>
+        // ==========================================
+        // ★ かんたん設定エリア (ここを編集してください)
+        // ==========================================
+        const config = {
+            // 基本情報
+            name: "GRID & AXIS",  // 会社名・ブランド名
+            role: "Global Creative Firm", // 肩書き
+            
+            // ヒーローエリアの巨大文字 (<br>で改行)
+            heroTitle: "BEYOND<br>THE<br>Logic.", 
+            
+            // 流れる文字 (スクロールテキスト)
+            marquee: "DIGITAL EXPERIENCE / BRANDING / STRATEGY / ART DIRECTION / ",
+            
+            // Philosophyセクションの文章 (<br>で改行)
+            lead: "私たちは常識を再定義する。<br>ロジックを超えた先に、<br>真の感情を動かす存在がある。",
+            
+            // Works（実績）の設定
+            // フォルダ内の画像 "image1.jpg" は "1" に対応します。
+            // 必要な数だけ追加・編集してください。画像がない番号は自動で非表示になります。
+            workText: {
+                1: { 
+                    title: "NEON FLUX", 
+                    cat: "Branding",
+                    desc: "東京の夜景とネオンサインからインスピレーションを得た、次世代エナジードリンクのブランディングプロジェクト。サイバーパンクな色彩設計とグリッチノイズを取り入れたタイポグラフィにより、デジタルネイティブ世代に響く「覚醒」のイメージを視覚化しました。"
+                },
+                2: { 
+                    title: "SILENT MODE", 
+                    cat: "Web Design",
+                    desc: "「情報のノイズを極限まで削ぎ落とす」をテーマにした、建築事務所のポートフォリオサイト。モノクロームを基調とし、余白（ホワイトスペース）を大胆に活用することで、建築写真そのものが持つ静謐な美しさを最大限に引き立てるUI/UXを設計しました。"
+                },
+                3: { 
+                    title: "URBAN ECHO", 
+                    cat: "Art Direction",
+                    desc: "都市の喧騒と孤独を対比させたストリートファッションブランドのシーズンビジュアル。アナログフィルム特有の粒子感と多重露光テクニックを組み合わせ、都会のスピード感の中に埋もれる個人の感情の揺らぎを表現しています。"
+                },
+                4: {
+                    title: "PRISM LOGIC",
+                    cat: "Graphic Art",
+                    desc: "光の屈折と幾何学模様をモチーフにした、音楽フェスティバルのキービジュアル制作。3Dレンダリングとフラットなグラフィックデザインを融合させ、音楽のジャンルを超えた多様性と、会場で生まれる熱量の交差をプリズムの輝きとして昇華させました。"
+                }
+            },
+
+            // フッターのリンク (URLと表示名)
+            links: [
+                { label: "Instagram", url: "#" },
+                { label: "Behance", url: "#" },
+                { label: "Email", url: "mailto:hello@example.com" }
+            ]
+        };
+
+        // ==========================================
+        // ▼ ここから下はプログラムの動作部分です
+        //   (基本的には触らなくてOKです)
+        // ==========================================
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // 基本情報反映
+            document.getElementById('brand-name').textContent = config.name;
+            document.getElementById('brand-role').textContent = config.role;
+            document.getElementById('co-name').textContent = config.name + " Inc.";
+            document.getElementById('footer-copy').textContent = config.name;
+            document.getElementById('year').textContent = new Date().getFullYear();
+            
+            // ヒーロータイトル
+            const titleEl = document.getElementById('hero-title');
+            titleEl.innerHTML = config.heroTitle.split('<br>').map(line => `<span>${line}</span>`).join('');
+
+            // マーキー
+            const marqueeEl = document.getElementById('marquee-text');
+            marqueeEl.innerHTML = `<span class="marquee-text">${config.marquee.repeat(4)}</span>`;
+
+            // リード文
+            document.getElementById('main-lead').innerHTML = config.lead;
+
+            // Works 自動生成 & 自動非表示ロジック
+            const worksCont = document.getElementById('works-container');
+            const hoverImg = document.getElementById('hover-reveal');
+            
+            // モーダル要素
+            const modal = document.getElementById('modal-wrap');
+            const modalImg = document.getElementById('modal-img');
+            const modalTitle = document.getElementById('modal-title');
+            const modalCat = document.getElementById('modal-cat');
+            const modalDesc = document.getElementById('modal-desc'); 
+            const modalClose = document.getElementById('modal-close');
+
+            // 1～18までループして生成 (画像があれば表示、なければ削除)
+            for (let i = 1; i <= 18; i++) {
+                const imgPath = `image/image${i}.jpg`;
+                
+                // テキスト情報取得（設定がなければデフォルト）
+                const info = config.workText[i] || { title: `PROJECT ${String(i).padStart(2, '0')}`, cat: "Design Work" };
+
+                const el = document.createElement('div');
+                el.className = 'work-item';
+                // 初期状態を非表示にする（ロードエラー時のカクつき防止）
+                el.style.display = 'none';
+
+                // HTML構造：onloadで表示、onerrorで要素ごと削除
+                el.innerHTML = `
+                    <img src="${imgPath}" class="check-img" 
+                         onload="this.closest('.work-item').style.display = 'block'"
+                         onerror="this.closest('.work-item').remove()">
+                    <div class="work-header">
+                        <span class="work-num">(${String(i).padStart(2, '0')})</span>
+                        <div class="work-cat">${info.cat}</div>
+                    </div>
+                    <h3 class="work-title">${info.title}</h3>
+                `;
+
+                // マウス追従ロジック
+                el.addEventListener('mouseenter', () => {
+                    hoverImg.src = imgPath;
+                    hoverImg.classList.add('active');
+                });
+                el.addEventListener('mouseleave', () => {
+                    hoverImg.classList.remove('active');
+                });
+
+                // クリック時のモーダル表示
+                el.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    modalImg.src = imgPath;
+                    modalTitle.textContent = info.title;
+                    modalCat.textContent = info.cat;
+                    // 詳細テキストの反映
+                    modalDesc.textContent = info.desc || "詳細情報が設定されていません。";
+                    modal.classList.add('open');
+                });
+
+                worksCont.appendChild(el);
+            }
+
+            // モーダル閉じる処理
+            const closeModal = () => modal.classList.remove('open');
+            modalClose.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if(e.target === modal) closeModal();
+            });
+
+            // リンク生成
+            const footLinks = document.getElementById('footer-links');
+            config.links.forEach(l => {
+                const a = document.createElement('a');
+                a.href = l.url;
+                a.textContent = l.label;
+                footLinks.appendChild(a);
+            });
+
+            // マウス追従移動
+            document.addEventListener('mousemove', (e) => {
+                const x = e.clientX - 200; 
+                const y = e.clientY - 150;
+                requestAnimationFrame(() => {
+                    hoverImg.style.left = `${x}px`;
+                    hoverImg.style.top = `${y}px`;
+                });
+            });
+
+            // オープニングアニメーション
+            setTimeout(() => {
+                document.querySelector('.loader').classList.add('hide');
+                document.body.classList.add('loaded');
+            }, 800);
+        });
+    </script>
+</body>
+</html>
