@@ -1,6 +1,6 @@
 import GridSection from '../GridSection';
 import Link from 'next/link';
-import { getNewsItems, formatDate, type NewsItem } from '@/lib/microcms';
+import { getNewsItems, formatDate } from '@/lib/microcms';
 
 export default async function NewsSection() {
   // microCMSから最新3件を取得
@@ -15,7 +15,7 @@ export default async function NewsSection() {
       bgClass="section-bg-contents-news-careers"
     >
       <div>
-        {newsItems.map((item, index) => (
+        {newsItems.map((item) => (
           <Link
             key={item.id}
             href="/news"

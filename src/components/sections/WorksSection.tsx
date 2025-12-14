@@ -6,12 +6,19 @@ import { useState } from 'react';
 
 // 実績写真のプレースホルダー（実際の画像に置き換えてください）
 // 30枚以上の写真を生成（カテゴリごとに分散）
-const generateGalleryImages = () => {
-  const images = [];
+interface GalleryImage {
+  id: string;
+  category: string;
+  src: string;
+  alt: string;
+}
+
+const generateGalleryImages = (): GalleryImage[] => {
+  const images: GalleryImage[] = [];
   const categories = ['luxury', 'beauty', 'lifestyle', 'fashion', 'travel', 'retail'];
   
   // 各カテゴリに5-6枚ずつ割り当て
-  categories.forEach((category, catIndex) => {
+  categories.forEach((category) => {
     const count = category === 'luxury' ? 6 : 5; // LUXURY FASHIONは6枚、他は5枚
     for (let i = 0; i < count; i++) {
       images.push({

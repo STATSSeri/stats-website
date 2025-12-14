@@ -2,7 +2,6 @@
 
 import GridSection from '@/components/GridSection';
 import Link from 'next/link';
-import { useState } from 'react';
 
 const serviceCategories = [
   {
@@ -102,7 +101,6 @@ const serviceCategories = [
 ];
 
 export default function ServicesPage() {
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   return (
     <>

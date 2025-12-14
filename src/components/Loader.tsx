@@ -7,11 +7,13 @@ export default function Loader() {
   const [isRemoved, setIsRemoved] = useState(false);
 
   useEffect(() => {
+    // ローダーを非表示にする
     const timer = setTimeout(() => {
       setIsHidden(true);
       document.body.classList.add('loaded');
     }, 800);
 
+    // DOMから完全に削除する
     const removeTimer = setTimeout(() => {
       setIsRemoved(true);
     }, 1600);

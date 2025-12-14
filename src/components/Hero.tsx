@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export default function Hero() {
@@ -13,17 +12,22 @@ export default function Hero() {
       setIsLoaded(true);
     }, 100);
 
-    // 英語タイトル表示後、0.5〜1秒後に日本語を表示
-    const japaneseTimer = setTimeout(() => {
-      if (isLoaded) {
-        setShowJapanese(true);
-      }
-    }, 800); // 0.8秒後
-
     return () => {
       clearTimeout(timer);
-      clearTimeout(japaneseTimer);
     };
+  }, []);
+
+  useEffect(() => {
+    // 英語タイトル表示後、0.8秒後に日本語を表示
+    if (isLoaded) {
+      const japaneseTimer = setTimeout(() => {
+        setShowJapanese(true);
+      }, 800);
+
+      return () => {
+        clearTimeout(japaneseTimer);
+      };
+    }
   }, [isLoaded]);
 
   return (
@@ -49,7 +53,8 @@ export default function Hero() {
             style={{
               opacity: isLoaded ? 1 : 0,
               transform: isLoaded ? 'translateY(0)' : 'translateY(100px)',
-              transition: 'all 1s cubic-bezier(0.16, 1, 0.3, 1) 0s',
+              transition: 'opacity 1s cubic-bezier(0.16, 1, 0.3, 1) 0s, transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0s',
+              willChange: isLoaded ? 'auto' : 'transform, opacity',
             }}
           >
             Designing
@@ -58,7 +63,8 @@ export default function Hero() {
             style={{
               opacity: isLoaded ? 1 : 0,
               transform: isLoaded ? 'translateY(0)' : 'translateY(100px)',
-              transition: 'all 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s',
+              transition: 'opacity 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s',
+              willChange: isLoaded ? 'auto' : 'transform, opacity',
             }}
           >
             the
@@ -68,7 +74,8 @@ export default function Hero() {
             style={{
               opacity: isLoaded ? 1 : 0,
               transform: isLoaded ? 'translateY(0)' : 'translateY(100px)',
-              transition: 'all 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s',
+              transition: 'opacity 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s',
+              willChange: isLoaded ? 'auto' : 'transform, opacity',
             }}
           >
             Inevitable.
@@ -81,6 +88,7 @@ export default function Hero() {
             opacity: showJapanese ? 1 : 0,
             transform: showJapanese ? 'translateY(0)' : 'translateY(20px)',
             transition: 'opacity 0.8s ease-in-out 0.3s, transform 0.8s ease-in-out 0.3s',
+            willChange: showJapanese ? 'auto' : 'transform, opacity',
           }}
         >
           その「熱狂」は、偶然ではない。

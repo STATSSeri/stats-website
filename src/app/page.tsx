@@ -1,4 +1,3 @@
-import dynamic from 'next/dynamic';
 import Loader from "@/components/Loader";
 import Hero from "@/components/Hero";
 import Marquee from "@/components/Marquee";

@@ -83,6 +83,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  will-change: transform;
   transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1);
 }
 
@@ -118,24 +119,6 @@ body {
 
 .section-bg-works {
   background: #FFF4ED;
-  color: #111111;
-}
-
-.section-bg-works * {
-  color: #111111;
-}
-
-.section-bg-works .text-[var(--text-secondary)] {
-  color: #555555;
-}
-
-.section-bg-works .text-[var(--text-muted)] {
-  color: #888888;
-}
-
-.section-bg-works .border-[var(--border)],
-.section-bg-works [class*="border-[var(--border)]"] {
-  border-color: #111111 !important;
 }
 
 .section-bg-works .grid-section {
@@ -144,15 +127,10 @@ body {
 
 .section-bg-works .sticky-col {
   border-right-color: #111111;
-  color: #111111;
 }
 
 .section-bg-works .sticky-col .u-caps {
   color: #FF4D00;
-}
-
-.section-bg-works .sticky-col .text-[var(--text-muted)] {
-  color: #888888;
 }
 
 .section-bg-business {
@@ -166,22 +144,6 @@ body {
 .section-bg-contact {
   background: #F5F3EF;
   color: #111111;
-}
-
-.section-bg-contact * {
-  color: #111111;
-}
-
-.section-bg-contact .text-[var(--text-secondary)] {
-  color: #555555;
-}
-
-.section-bg-contact .text-[var(--text-muted)] {
-  color: #888888;
-}
-
-.section-bg-contact .border-[var(--border)] {
-  border-color: #111111;
 }
 
 /* Hero */
@@ -374,17 +336,7 @@ body {
   border-color: var(--accent);
 }
 
-/* Button Styles */
-button[class*="border-[var(--accent)]"],
-a[class*="border-[var(--accent)]"] {
-  transition: background-color 0.3s, border-color 0.3s, color 0.3s;
-}
-
-button[class*="border-[var(--accent)]"]:hover,
-a[class*="border-[var(--accent)]"]:hover {
-  background-color: var(--accent-light);
-  border-color: var(--accent-light);
-}
+/* Button Styles - Tailwind classes are handled inline */
 
 /* Hover Image Follow */
 .cursor-img {
