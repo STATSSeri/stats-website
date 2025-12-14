@@ -13,6 +13,10 @@ const nextConfig = {
         hostname: 'picsum.photos',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: '*.microcms.io',
+      },
     ],
   },
   
@@ -26,6 +30,19 @@ const nextConfig = {
   experimental: {
     // 最適化されたパッケージインポート
     optimizePackageImports: ['@/components'],
+    // CSS最適化を無効化（cssnanoエラー回避）
+    optimizeCss: false,
+  },
+  
+  // Webpack設定
+  webpack: (config, { dev, isServer }) => {
+    // 本番ビルドでのCSS最小化を無効化
+    if (!dev && !isServer) {
+      config.optimization.minimizer = config.optimization.minimizer?.filter(
+        (minimizer) => minimizer.constructor.name !== 'CssMinimizerPlugin'
+      );
+    }
+    return config;
   },
   
   // 出力設定

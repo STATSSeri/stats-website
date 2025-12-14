@@ -33,9 +33,6 @@
 
 html {
   scroll-behavior: smooth;
-}
-
-html {
   overflow-x: hidden;
 }
 
@@ -460,7 +457,7 @@ body {
 }
 
 /* Global Header */
-header[class*="fixed"] {
+header.fixed {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
